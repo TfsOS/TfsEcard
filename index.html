@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TFS Ecard Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        .menu {
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            left: -250px;
+            top: 0;
+            width: 250px;
+            height: 100%;
+            background-color: #111;
+            padding-top: 60px;
+            transition: 0.3s;
+        }
+        .menu a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 20px;
+            color: white;
+            display: block;
+        }
+        .menu a:hover {
+            background-color: #575757;
+        }
+        .open-menu-btn {
+            font-size: 30px;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            background-color: #4CAF50;
+            padding: 10px;
+        }
+        .content {
+            margin-left: 0;
+            transition: margin-left 0.3s;
+            padding: 20px;
+        }
+        .container {
+            margin: 0;
+            padding: 20px;
+        }
+        .menu-btn {
+            padding: 5px 10px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .menu-btn:hover {
+            background-color: #e74c3c;
+        }
+        .hide-menu {
+            left: 0;
+        }
+        .show-menu {
+            margin-left: 250px;
+        }
+        .form-input {
+            margin-bottom: 10px;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <span class="open-menu-btn" onclick="toggleMenu()">&#9776;</span>
+        <h1>TFS Ecard Login</h1>
+    </header>
+
+    <div class="menu" id="sideMenu">
+        <button onclick="toggleMenu()" class="menu-btn">Close Menu</button>
+        <a href="#" onclick="showPage('home')">Home</a>
+        <a href="#" onclick="showPage('help')">Help</a>
+        <a href="#" onclick="showPage('idLogin')">ID Login</a>
+        <a href="#" onclick="showPage('cardLogin')">Card Login</a>
+    </div>
+
+    <div class="content" id="mainContent">
+        <div class="container" id="home">
+            <h2>Welcome to TFS Ecard Login</h2>
+            <p>Use this portal to log in using your ID or TFS card.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 TFS Ecard Login</p>
+    </footer>
+
+    <script>
+        const users = [
+            { id: "1234567890", card: "9876543210", name: "John Doe", number: "555-1234" },
+            { id: "0987654321", card: "1234567890", name: "Jane Smith", number: "555-4321" }
+        ];
+
+        function toggleMenu() {
+            document.getElementById('sideMenu').classList.toggle('hide-menu');
+            document.getElementById('mainContent').classList.toggle('show-menu');
+        }
+
+        function showPage(page) {
+            let content = document.getElementById('mainContent');
+            if (page === 'home') {
+                content.innerHTML = `
+                    <div class="container">
+                        <h2>Welcome to TFS Ecard Login</h2>
+                        <p>Use this portal to log in using your ID or TFS card.</p>
+                    </div>
+                `;
+            } else if (page === 'help') {
+                content.innerHTML = `
+                    <div class="container">
+                        <h2>Help</h2>
+                        <p>If you need assistance, please contact support at support@tfs.com.</p>
+                    </div>
+                `;
+            } else if (page === 'idLogin') {
+                content.innerHTML = `
+                    <div class="container">
+                        <h2>ID Login</h2>
+                        <form onsubmit="login(event, 'id')">
+                            <div class="form-input">
+                                <label for="id">Enter your ID:</label>
+                                <input type="text" id="id" placeholder="ID" required>
+                            </div>
+                            <input type="submit" value="Login">
+                        </form>
+                    </div>
+                `;
+            } else if (page === 'cardLogin') {
+                content.innerHTML = `
+                    <div class="container">
+                        <h2>Card Login</h2>
+                        <form onsubmit="login(event, 'card')">
+                            <div class="form-input">
+                                <label for="card">Enter your Card Number:</label>
+                                <input type="text" id="card" placeholder="Card Number" required>
+                            </div>
+                            <input type="submit" value="Login">
+                        </form>
+                    </div>
+                `;
+            }
+        }
+
+        function login(event, type) {
+            event.preventDefault();
+            let input = document.getElementById(type).value;
+            let user = users.find(u => u[type] === input);
+
+            if (user) {
+                showDashboard(user);
+            } else {
+                alert("Invalid " + (type === 'id' ? 'ID' : 'Card Number'));
+            }
+        }
+
+        function showDashboard(user) {
+            let content = document.getElementById('mainContent');
+            content.innerHTML = `
+                <div class="container">
+                    <h2>Welcome, ${user.name}</h2>
+            <p><h2>ID/CARD status:<strong>ACTIVE</strong></h2></p>
+                    <p>Make changes to your TFS ID or card details below:</p>
+                    <form>
+                        <div class="form-input">
+                            <label for="number">Change Number:</label>
+                            <input type="text" id="number" value="${user.number}">
+                        </div>
+                        <div class="form-input">
+                            <label for="name">Change Name:</label>
+                            <input type="text" id="name" value="${user.name}">
+                        </div>
+                        <div class="form-input">
+                            <label for="id">Change ID Number:</label>
+                            <input type="text" id="id" value="${user.id}">
+                        </div>
+                        <div class="form-input">
+                            <label for="card">Change TFS Card Number:</label>
+                            <input type="text" id="card" value="${user.card}">
+                        </div>
+                        <input type="submit" value="Save Changes" onclick="saveChanges(event, '${user.id}')">
+                    </form>
+                </div>
+            `;
+        }
+
+        function saveChanges(event, originalId) {
+            event.preventDefault();
+            let user = users.find(u => u.id === originalId);
+            user.number = document.getElementById('number').value;
+            user.name = document.getElementById('name').value;
+            user.id = document.getElementById('id').value;
+            user.card = document.getElementById('card').value;
+            alert("Changes saved!");
+        }
+    </script>
+
+</body>
+</html>
